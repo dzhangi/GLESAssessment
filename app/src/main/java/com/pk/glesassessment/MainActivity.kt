@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.pk.glesassessment.databinding.ActivityMainBinding
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import kotlin.math.PI
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,6 +21,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.rotationSlider.addOnChangeListener { _, value, _ ->
             Log.d(SLIDER_TAG, "Value: $value")
+            shiftAngle(-value * PI.toFloat())
         }
 
         binding.glSurfaceView.apply {
@@ -27,18 +29,30 @@ class MainActivity : AppCompatActivity() {
             setRenderer(object : GLSurfaceView.Renderer {
                 override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
                     Log.d(GL_TAG, "onSurfaceCreated")
+                    initGL()
                 }
 
                 override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
                     Log.d(GL_TAG, "onSurfaceChanged")
+                    resizeViewPort(width, height)
                 }
 
                 override fun onDrawFrame(gl: GL10?) {
                     Log.d(GL_TAG, "onDrawFrame")
+                    drawFrame()
                 }
             })
         }
     }
+
+    external fun initGL()
+
+    external fun resizeViewPort(width: Int, height: Int)
+
+    external fun drawFrame()
+
+    external fun shiftAngle(angle: Float)
+
 
     companion object {
         const val SLIDER_TAG = "SLIDER_LISTENER"
