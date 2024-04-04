@@ -45,13 +45,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    external fun initGL()
+    private external fun initGL()
 
-    external fun resizeViewPort(width: Int, height: Int)
+    private external fun resizeViewPort(width: Int, height: Int)
 
-    external fun drawFrame()
+    private external fun drawFrame()
 
-    external fun shiftAngle(angle: Float)
+    private external fun shiftAngle(angle: Float)
 
 
     companion object {
