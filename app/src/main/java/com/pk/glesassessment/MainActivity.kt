@@ -16,13 +16,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val nativeLib = NativeLib()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.rotationSlider.addOnChangeListener { _, value, _ ->
             Log.d(SLIDER_TAG, "Value: $value")
-            shiftAngle(-value * PI.toFloat())
+            nativeLib.shiftAngle(-value * PI.toFloat())
         }
 
         binding.glSurfaceView.apply {
@@ -30,38 +31,24 @@ class MainActivity : AppCompatActivity() {
             setRenderer(object : GLSurfaceView.Renderer {
                 override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
                     Log.d(GL_TAG, "onSurfaceCreated")
-                    initGL()
+                    nativeLib.initGL()
                 }
 
                 override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
                     Log.d(GL_TAG, "onSurfaceChanged")
-                    resizeViewPort(width, height)
+                    nativeLib.resizeViewPort(width, height)
                 }
 
                 override fun onDrawFrame(gl: GL10?) {
                     Log.d(GL_TAG, "onDrawFrame")
-                    drawFrame()
+                    nativeLib.drawFrame()
                 }
             })
         }
-        Log.d("NATIVE_LIB", NativeLib().stringFromJNI())
     }
-
-    private external fun initGL()
-
-    private external fun resizeViewPort(width: Int, height: Int)
-
-    private external fun drawFrame()
-
-    private external fun shiftAngle(angle: Float)
-
 
     companion object {
         const val SLIDER_TAG = "SLIDER_LISTENER"
         const val GL_TAG = "GL_RENDERER"
-
-        init {
-            System.loadLibrary("glesassessment")
-        }
     }
 }

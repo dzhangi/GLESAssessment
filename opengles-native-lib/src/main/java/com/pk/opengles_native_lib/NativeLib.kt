@@ -2,11 +2,13 @@ package com.pk.opengles_native_lib
 
 class NativeLib {
 
-    /**
-     * A native method that is implemented by the 'opengles_native_lib' native library,
-     * which is packaged with this application.
-     */
-    external fun stringFromJNI(): String
+    external fun initGL()
+
+    external fun resizeViewPort(width: Int, height: Int)
+
+    external fun drawFrame()
+
+    external fun shiftAngle(angle: Float)
 
     companion object {
         // Used to load the 'opengles_native_lib' library on application startup.
