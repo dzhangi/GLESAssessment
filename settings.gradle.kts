@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "GLESAssessment"
 include(":app")
- 
+include(":opengles-native-lib")
