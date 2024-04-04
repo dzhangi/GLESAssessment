@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.pk.glesassessment.databinding.ActivityMainBinding
+import com.pk.opengles_native_lib.NativeLib
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import kotlin.math.PI
@@ -43,6 +44,7 @@ class MainActivity : AppCompatActivity() {
                 }
             })
         }
+        Log.d("NATIVE_LIB", NativeLib().stringFromJNI())
     }
 
     private external fun initGL()
