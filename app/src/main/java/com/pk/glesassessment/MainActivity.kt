@@ -1,9 +1,12 @@
 package com.pk.glesassessment
 
-import androidx.appcompat.app.AppCompatActivity
+import android.opengl.GLSurfaceView
 import android.os.Bundle
-import android.widget.TextView
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import com.pk.glesassessment.databinding.ActivityMainBinding
+import javax.microedition.khronos.egl.EGLConfig
+import javax.microedition.khronos.opengles.GL10
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,18 +18,32 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Example of a call to a native method
-        binding.sampleText.text = stringFromJNI()
+        binding.rotationSlider.addOnChangeListener { _, value, _ ->
+            Log.d(SLIDER_TAG, "Value: $value")
+        }
+
+        binding.glSurfaceView.apply {
+            setEGLContextClientVersion(3)
+            setRenderer(object : GLSurfaceView.Renderer {
+                override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
+                    Log.d(GL_TAG, "onSurfaceCreated")
+                }
+
+                override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
+                    Log.d(GL_TAG, "onSurfaceChanged")
+                }
+
+                override fun onDrawFrame(gl: GL10?) {
+                    Log.d(GL_TAG, "onDrawFrame")
+                }
+            })
+        }
     }
 
-    /**
-     * A native method that is implemented by the 'glesassessment' native library,
-     * which is packaged with this application.
-     */
-    external fun stringFromJNI(): String
-
     companion object {
-        // Used to load the 'glesassessment' library on application startup.
+        const val SLIDER_TAG = "SLIDER_LISTENER"
+        const val GL_TAG = "GL_RENDERER"
+
         init {
             System.loadLibrary("glesassessment")
         }
