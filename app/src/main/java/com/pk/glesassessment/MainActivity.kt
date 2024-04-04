@@ -10,41 +10,47 @@ import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import kotlin.math.PI
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), GLSurfaceView.Renderer {
 
-    private lateinit var binding: ActivityMainBinding
+    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private val nativeLib by lazy { NativeLib() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val nativeLib = NativeLib()
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setListeners()
+        initSurfaceView()
+    }
+
+    private fun setListeners() {
         binding.rotationSlider.addOnChangeListener { _, value, _ ->
             Log.d(SLIDER_TAG, "Value: $value")
             nativeLib.shiftAngle(-value * PI.toFloat())
         }
+    }
 
+    private fun initSurfaceView() {
         binding.glSurfaceView.apply {
             setEGLContextClientVersion(3)
-            setRenderer(object : GLSurfaceView.Renderer {
-                override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
-                    Log.d(GL_TAG, "onSurfaceCreated")
-                    nativeLib.initGL()
-                }
-
-                override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
-                    Log.d(GL_TAG, "onSurfaceChanged")
-                    nativeLib.resizeViewPort(width, height)
-                }
-
-                override fun onDrawFrame(gl: GL10?) {
-                    Log.d(GL_TAG, "onDrawFrame")
-                    nativeLib.drawFrame()
-                }
-            })
+            setRenderer(this@MainActivity)
         }
+    }
+
+    override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
+        Log.d(GL_TAG, "onSurfaceCreated")
+        nativeLib.initGL()
+    }
+
+    override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
+        Log.d(GL_TAG, "onSurfaceChanged")
+        nativeLib.resizeViewPort(width, height)
+    }
+
+    override fun onDrawFrame(gl: GL10?) {
+        Log.d(GL_TAG, "onDrawFrame")
+        nativeLib.drawFrame()
     }
 
     companion object {
